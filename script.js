@@ -20,7 +20,7 @@ $(document).ready(function () {
   function searchWeather(searchValue) {
     $.ajax({
       type: "GET",
-      url: `http://api.openweathermap.org/data/2.5/forecast?q=${searchValue}&appid=245a8f56328f7aa62b487fc71a572af9`,
+      url: `https://api.openweathermap.org/data/2.5/forecast?q=${searchValue}&appid=245a8f56328f7aa62b487fc71a572af9`,
       dataType: "json",
     }).then(
       function (data) {
@@ -31,20 +31,12 @@ $(document).ready(function () {
           window.localStorage.setItem("history", JSON.stringify(history));
           makeRow(searchValue);
         }
-        console.log(data);
-        console.log(data.list[0].wind.speed);
-        console.log(data.list[0].main.humidity);
-        console.log(data.list[0].main.temp);
-        console.log(data.city.coord.lat);
-        console.log(data.city.coord.lon);
-        console.log(data.list[0].weather[0].icon);
-        console.log(data.city.name);
 
-        $("#today").html(`<h3 class=\"mt-3\">${data.city.name + " (" + new Date().toLocaleDateString()})</h3><br/> <img src="http://openweathermap.org/img/w/${data.list[0].weather[0].icon}.png" alt="Weather Image"><br/>Wind Speed: ${data.list[0].wind.speed} MPH<br/>Humidity: ${data.list[0].main.humidity} % <br/>Temperature: ${data.list[0].main.temp}°F`);
+        $("#today").html(`<h3 class=\"mt-3\">${data.city.name + " (" + new Date().toLocaleDateString()})</h3><br/> <img src="http://openweathermap.org/img/w/${data.list[0].weather[0].icon}.png" alt="Weather Image"><br/>Wind Speed: ${data.list[0].wind.speed} MPH<br/>Humidity: ${data.list[0].main.humidity} % <br/>Temperature: ${data.list[0].main.temp}°F <br/>`);
 
         // call follow-up api endpoints
         getForecast(searchValue);
-        getUVIndex(data.city.coord.lat, data.city.coord.lon);
+        var UV = getUVIndex(data.city.coord.lat, data.city.coord.lon);
       })
   };
 
@@ -52,7 +44,7 @@ $(document).ready(function () {
   function getForecast(searchValue) {
     $.ajax({
       type: "GET",
-      url: `http://api.openweathermap.org/data/2.5/forecast?q=${searchValue}&appid=245a8f56328f7aa62b487fc71a572af9`,
+      url: `https://api.openweathermap.org/data/2.5/forecast?q=${searchValue}&appid=245a8f56328f7aa62b487fc71a572af9`,
       dataType: "json"
     }).then(
       function (data) {
@@ -95,7 +87,6 @@ $(document).ready(function () {
         var uv = $("<p>").text("UV Index: ");
         var btn = $("<span>").addClass("btn btn-sm").text(data.current.uvi);
 
-        console.log(data.current.uvi);
         // change color depending on uv value
         if (data.current.uvi < 3) {
           btn.addClass("btn-success");
@@ -107,7 +98,7 @@ $(document).ready(function () {
           btn.addClass("btn-danger");
         }
 
-        $("#today .card-body").append(uv.append(btn));
+        $("#today").append(uv.append(btn));
       }
     );
   }
