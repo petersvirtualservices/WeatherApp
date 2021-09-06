@@ -40,14 +40,7 @@ $(document).ready(function () {
         console.log(data.list[0].weather[0].icon);
         console.log(data.city.name);
 
-        // create html content for current weather
-        var title = $("<h3>").addClass("card-title").text(data.city.name + " (" + new Date().toLocaleDateString() + ")");
-        var card = $("<div>").addClass("card");
-        var wind = $("<p>").addClass("card-text").text("Wind Speed: " + data.list[0].wind.speed + " MPH");
-        var humid = $("<p>").addClass("card-text").text("Humidity: " + data.list[0].main.humidity + "%");
-        var temp = $("<p>").addClass("card-text").text("Temperature: " + data.list[0].main.temp + " °F");
-        var cardBody = $("<div>").addClass("card-body");
-        var img = $("<img>").attr("src", "http://openweathermap.org/img/w/" + data.list[0].weather[0].icon + ".png");
+        $("#today").html(`<h3 class=\"mt-3\">${data.city.name + " (" + new Date().toLocaleDateString()})</h3><br/> <img src="http://openweathermap.org/img/w/${data.list[0].weather[0].icon}.png" alt="Weather Image"><br/>Wind Speed: ${data.list[0].wind.speed} MPH<br/>Humidity: ${data.list[0].main.humidity} % <br/>Temperature: ${data.list[0].main.temp}°F`);
 
         // call follow-up api endpoints
         getForecast(searchValue);
@@ -80,7 +73,7 @@ $(document).ready(function () {
 
             var img = $("<img>").attr("src", "http://openweathermap.org/img/w/" + data.list[i].weather[0].icon + ".png");
 
-            var p1 = $("<p>").addClass("card-text").text("Temp: " + data.list[i].main.temp_max + " °F");
+            var p1 = $("<p>").addClass("card-text").text("Temp: " + ((data.list[i].main.temp_min -32) / 1.8).toFixed(2)  + " °F");
             var p2 = $("<p>").addClass("card-text").text("Humidity: " + data.list[i].main.humidity + "%");
 
             // merge together and put on page
@@ -95,18 +88,19 @@ $(document).ready(function () {
   function getUVIndex(lat, lon) {
     $.ajax({
       type: "GET",
-      url: `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=245a8f56328f7aa62b487fc71a572af9`,
+      url: `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=245a8f56328f7aa62b487fc71a572af9`,
       dataType: "json"
     }).then(
       function (data) {
         var uv = $("<p>").text("UV Index: ");
-        var btn = $("<span>").addClass("btn btn-sm").text(data.value);
+        var btn = $("<span>").addClass("btn btn-sm").text(data.current.uvi);
 
+        console.log(data.current.uvi);
         // change color depending on uv value
-        if (data.value < 3) {
+        if (data.current.uvi < 3) {
           btn.addClass("btn-success");
         }
-        else if (data.value < 7) {
+        else if (data.current.uvi < 7) {
           btn.addClass("btn-warning");
         }
         else {
