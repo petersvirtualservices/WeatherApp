@@ -21,9 +21,13 @@ MIT
 
 ## Contact Information
 Name: Charlene Peters
+
 GitHub: petersvirtualservices
+
 Upwork: https://www.upwork.com/freelancers/petersvirtualservices
+
 Email: charlene@peters-services.com
+
 
 ## Known Bugs / Troubleshooting
 N/A
